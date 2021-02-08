@@ -1,6 +1,6 @@
 import os
 import secrets
-from PIL import Image
+# from PIL import Image
 from flask import render_template, url_for, redirect, flash, request
 from flask_login import login_required, login_user, logout_user, current_user
 from f1f import app, bcrypt, db
@@ -71,10 +71,10 @@ def account():
     form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.picture.data:
-            picture_file = _save_picture(form.picture.data)
+            picture_file = _save_picture(form.picture.data, current_user.image_file)
             current_user.image_file = picture_file
         current_user.username = form.username.data
-        current_user.email = form.email.data
+        current_user.password = bcrypt.generate_password_hash(form.password.data)
         db.session.commit()
 
         flash('Your account has been updated!', 'success')
@@ -82,22 +82,29 @@ def account():
 
     elif request.method == 'GET':
         form.username.data = current_user.username
-        form.email.data = current_user.email
+        form.password.data = current_user.password
 
     image_file = url_for('static', filename=f"profile_pics/{current_user.image_file}")
 
     return render_template('account.html', title='Account', image_file=image_file, form=form)
 
 
-def _save_picture(form_picture):
+def _save_picture(form_picture, old_pic):
     random_hex = secrets.token_hex(8)
     _, f_extension = os.path.splitext(form_picture.filename)
     picture_fn = random_hex + f_extension
     picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
 
-    output_size = (250, 250)
-    i = Image.open(form_picture)
-    i.thumbnail(output_size)
-    i.save(picture_path)
+    form_picture.save(picture_path)
+    # output_size = (250, 250)
+    # i = Image.open(form_picture)
+    # i.thumbnail(output_size)
+    # i.save(picture_path)
+    # ? if the file is downsized, gifs are lost to a single frame
+
+    old_pic_path = os.path.join(app.root_path, 'static/profile_pics', old_pic)
+    if os.path.exists(old_pic_path):
+        os.remove(old_pic_path)
+
 
     return picture_fn

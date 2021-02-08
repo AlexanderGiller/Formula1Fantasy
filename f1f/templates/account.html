@@ -28,21 +28,34 @@
                         {% endif %}
                     </div>
                     <div class="form-group">
-                        {{ form.email.label(class="form-control-label") }}
-                        {% if form.email.errors %}
-                            {{ form.email(class="form-control form-control-lg is-invalid") }}
+                        {{ form.password.label(class="form-control-label mt-3") }}
+                        {% if form.password.errors %}
+                            {{ form.password(class="form-control form-control-lg is-invalid") }}
                             <div class="invalid-feedback">
-                                {% for error in form.email.errors %}
+                                {% for error in form.password.errors %}
                                     <span>{{ error }}</span>
                                 {% endfor %}
                             </div>
                         {% else %}
-                            {{ form.email(class="form-control form-control-lg") }}
+                            {{ form.password(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.confirm_password.label(class="form-control-label mt-3") }}
+                        {% if form.confirm_password.errors %}
+                            {{ form.confirm_password(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.confirm_password.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.confirm_password(class="form-control form-control-lg") }}
                         {% endif %}
                     </div>
                     <div class="form-group">
                         {{ form.picture.label() }}
-                        {{ form.picture(class="form-control-file") }}
+                        {{ form.picture(class="form-control-file mt-3") }}
                         {% if form.picture.errors %}
                             {% for error in form.picture.errors %}
                             <span class="text-danger">{{ error }}</span></br>
@@ -51,7 +64,7 @@
                     </div>
                 </fieldset>
                 <div class="form-group mt-3">
-                    {{ form.submit(class="btn btn-outline-info") }}
+                    {{ form.submit(class="btn btn-outline-info mb-3") }}
                 </div>
             </form>
         <div class="border-top pt-3">
