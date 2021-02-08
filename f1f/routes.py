@@ -16,7 +16,8 @@ def dashboard():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
 
-    return render_template('dashboard.html', title='Dashboard')
+    image_file = url_for('static', filename=f"profile_pics/{current_user.image_file}")
+    return render_template('dashboard.html', title='Dashboard', image_file=image_file)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -73,8 +74,9 @@ def account():
         if form.picture.data:
             picture_file = _save_picture(form.picture.data, current_user.image_file)
             current_user.image_file = picture_file
+        if form.password.data:
+            current_user.password = bcrypt.generate_password_hash(form.password.data)
         current_user.username = form.username.data
-        current_user.password = bcrypt.generate_password_hash(form.password.data)
         db.session.commit()
 
         flash('Your account has been updated!', 'success')
