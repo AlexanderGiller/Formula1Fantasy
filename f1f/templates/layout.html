@@ -22,11 +22,7 @@
     <header class="site-header">
         <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
             <div class="container">
-                {% if current_user.is_authenticated %}
-                    <a class="navbar-brand mr-4" href="/dashboard">FEINS</a>
-                {% else %}
-                    <a class="navbar-brand mr-4" href="/">FEINS</a>
-                {% endif %}
+                <a class="navbar-brand mr-4" href="/">FEINS</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
                     aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -34,12 +30,13 @@
                 <div class="collapse navbar-collapse" id="navbarToggle">
                     <div class="navbar-nav me-auto">
                         <a class="nav-item nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                        <a class="nav-item nav-link" href="{{ url_for('myteam') }}">My Team</a>
                     </div>
                     <!-- Navbar Right Side -->
                     <div class="navbar-nav">
                         {% if current_user.is_authenticated %}
-                        <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
-                        <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+                            <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
+                            <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
                         {% else %}
                             <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
                             <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>

@@ -9,6 +9,8 @@ from f1f.forms import LoginForm, RegistrationForm, UpdateAccountForm
 
 @app.route('/')
 def index():
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
     return render_template('index.html', title='Welcome')
 
 @app.route('/dashboard')
@@ -19,7 +21,15 @@ def dashboard():
     image_file = url_for('static', filename=f"profile_pics/{current_user.image_file}")
     return render_template('dashboard.html', title='Dashboard', image_file=image_file)
 
+@app.route('/myteam')
+def myteam():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
 
+    return render_template('myteam.html', title='My Team')
+
+
+# ! -------- USER MANAGEMENT ROUTES --------
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -107,6 +117,5 @@ def _save_picture(form_picture, old_pic):
     old_pic_path = os.path.join(app.root_path, 'static/profile_pics', old_pic)
     if os.path.exists(old_pic_path):
         os.remove(old_pic_path)
-
 
     return picture_fn
