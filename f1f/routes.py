@@ -138,7 +138,7 @@ def bug_report():
     form = BugForm()
 
     if form.validate_on_submit():
-        message = f"User {form.name.data} sent the following report:\n>>> {form.text.data}"
+        message = f"User '{current_user.username}' sent the following report:\nSubject: '{form.subject.data}'\n>>> {form.text.data}"
         requests.post(
             "https://discord.com/api/webhooks/809373666889957387/1a3CmiXWhjRJDv8bdC6KbQUrDxDGohqay6pRraZnK6YhkKq5rfHHdJ31Q3G6XrW3gSs-",
             data={"content": message

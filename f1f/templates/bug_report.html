@@ -8,17 +8,17 @@
             <legend class="border-bottom mb-4">Report a Bug</legend>
 
             <div class="form-group">
-                {{ form.name.label(class="form-control-label") }}
+                {{ form.subject.label(class="form-control-label") }}
                 <small class="text-muted"> (optional)</small>
-                {% if form.name.errors %}
-                    {{ form.name(class="form-control form-control-lg is-invalid") }}
+                {% if form.subject.errors %}
+                    {{ form.subject(class="form-control form-control-lg is-invalid") }}
                     <div class="invalid-feedback">
-                        {% for error in form.name.errors %}
+                        {% for error in form.subject.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.name(class="form-control form-control-lg") }}
+                    {{ form.subject(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
 

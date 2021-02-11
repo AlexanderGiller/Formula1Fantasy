@@ -52,7 +52,7 @@ class UpdateAccountForm(FlaskForm):
 
 class BugForm(FlaskForm):
 
-    name = StringField('Email')
-    text = StringField('Text', validators=[InputRequired()], widget=TextArea())
+    subject = StringField('Subject')
+    text = StringField('Description', validators=[InputRequired()], widget=TextArea())
 
     submit = SubmitField('Send')
