@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
+from flask_admin import Admin
 
 app = Flask(__name__)
 
@@ -13,4 +14,7 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 bcrypt = Bcrypt(app)
 
+admin = Admin(app, name='FEINS Admin Panel')
+
 from f1f import routes
+from f1f import admin_panel

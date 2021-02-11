@@ -42,7 +42,7 @@ def login():
 
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        user = User.query.filter_by(email=form.email.data.lower()).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             flash('You have been logged in!', 'success')
@@ -72,7 +72,7 @@ def register():
     if form.validate_on_submit():
         hashed_pw = bcrypt.generate_password_hash(form.password.data)
         user = User(username=form.username.data,
-                    email=form.email.data, password=hashed_pw)
+                    email=form.email.data.lower(), password=hashed_pw)
         db.session.add(user)
         db.session.commit()
         flash('Account created. You can now log in.', 'success')
@@ -126,7 +126,7 @@ def _save_picture(form_picture, old_pic):
     # ? if the file is downsized, gifs are lost to a single frame
 
     old_pic_path = os.path.join(app.root_path, 'static/profile_pics', old_pic)
-    if os.path.exists(old_pic_path):
+    if os.path.exists(old_pic_path) and old_pic != 'default.jpg':
         os.remove(old_pic_path)
 
     return picture_fn
@@ -140,7 +140,7 @@ def bug_report():
     if form.validate_on_submit():
         message = f"User {form.name.data} sent the following report:\n>>> {form.text.data}"
         requests.post(
-            "https://discord.com/api/webhooks/809373666889957387/1a3CmiXWhjRJDv8bdC6KbQUrDxDGohqay6pRraZnK6YhkKq5rfHHdJ31Q3G6XrW3gSs-", 
+            "https://discord.com/api/webhooks/809373666889957387/1a3CmiXWhjRJDv8bdC6KbQUrDxDGohqay6pRraZnK6YhkKq5rfHHdJ31Q3G6XrW3gSs-",
             data={"content": message
         })
 
