@@ -16,5 +16,7 @@ bcrypt = Bcrypt(app)
 
 admin = Admin(app, name='FEINS Admin Panel')
 
-from f1f import routes
+from f1f.routes.account import *
+from f1f.routes.misc import *
+from f1f.routes.team import *
 from f1f import admin_panel

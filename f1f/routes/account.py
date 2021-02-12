@@ -1,40 +1,13 @@
 import os
 import secrets
-import requests
-# from PIL import Image
-from flask import render_template, url_for, redirect, flash, request
-from flask_login import login_required, login_user, logout_user, current_user
-from f1f import app, bcrypt, db
+from flask import render_template, redirect, url_for, flash, request
+from flask_login import current_user, login_required, login_user, logout_user
+from f1f import app, db, bcrypt
 from f1f.models import User
-from f1f.forms import LoginForm, RegistrationForm, UpdateAccountForm, BugForm
+from f1f.forms import LoginForm, RegistrationForm, UpdateAccountForm
 
 
-@app.route('/')
-def index():
-    if current_user.is_authenticated:
-        return redirect(url_for('dashboard'))
-    return render_template('index.html', title='Welcome')
 
-
-@app.route('/dashboard')
-def dashboard():
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-
-    image_file = url_for(
-        'static', filename=f"profile_pics/{current_user.image_file}")
-    return render_template('dashboard.html', title='Dashboard', image_file=image_file)
-
-
-@app.route('/myteam')
-def myteam():
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-
-    return render_template('myteam.html', title='My Team')
-
-
-# ! -------- USER MANAGEMENT ROUTES --------
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -51,7 +24,7 @@ def login():
         else:
             flash('Login unsuccesful. Please check data!', 'danger')
 
-    return render_template('login.html', title='Login', form=form)
+    return render_template('account/login.html', title='Login', form=form)
 
 
 @app.route('/logout')
@@ -78,7 +51,7 @@ def register():
         flash('Account created. You can now log in.', 'success')
         return redirect(url_for('login'))
 
-    return render_template('register.html', title='Register', form=form)
+    return render_template('account/register.html', title='Register', form=form)
 
 
 @app.route('/account', methods=['GET', 'POST'])
@@ -108,7 +81,7 @@ def account():
     image_file = url_for(
         'static', filename=f"profile_pics/{current_user.image_file}")
 
-    return render_template('account.html', title='Account', image_file=image_file, form=form)
+    return render_template('account/account.html', title='Account', image_file=image_file, form=form)
 
 
 def _save_picture(form_picture, old_pic):
@@ -130,22 +103,3 @@ def _save_picture(form_picture, old_pic):
         os.remove(old_pic_path)
 
     return picture_fn
-
-
-# ! -------- MISC ROUTES --------
-@app.route('/bug_report', methods=['GET', 'POST'])
-def bug_report():
-    form = BugForm()
-
-    if form.validate_on_submit():
-        message = f"User '{current_user.username}' sent the following report:\nSubject: '{form.subject.data}'\n>>> {form.text.data}"
-        requests.post(
-            "https://discord.com/api/webhooks/809373666889957387/1a3CmiXWhjRJDv8bdC6KbQUrDxDGohqay6pRraZnK6YhkKq5rfHHdJ31Q3G6XrW3gSs-",
-            data={"content": message
-        })
-
-        flash('Thank you. We will look into it!', 'success')
-        next_page = request.args.get('next')
-        return redirect(next_page) if next_page else redirect(url_for('bug_report'))
-
-    return render_template('bug_report.html', title='Report a Bug', form=form)
