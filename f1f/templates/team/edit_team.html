@@ -1,40 +1,37 @@
 {% extends "layout.html" %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='scripts/edit_team.js') }}"></script>
+{% endblock scripts %}
+
 {% block content %}
 
     <h1 class='display-1'>Edit Team</h1>
 
-    <h5 class='display-5'>Total Cost: </h3>
-        
+    
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5 pb-5">
+      {% for driver  in drivers %}
+      
+      <div class="col">
+        <div class="card h-100 " id='driver_{{ driver.id }}'>
+          <img src="{{ url_for('static', filename='images/drivers/placeholder.jpg') }}" class="card-img-top" alt="Driver Picture">
+          <div class="card-body">
+            <h5 class="card-title">#{{ driver.id }}  {{ driver.name }}</h5>
+            <p class="card-text">{{ driver.first_name }} {{ driver.name }}</p>
+            <p class="card-text">Driving for {{ driver.team.name_short }}</p>
+            <p class="card-text price">{{ driver.cost }}</p>
+          </div>
+        </div>
+      </div>
+      
+      {% endfor %}
+    </div>
+    
+    <footer class='fixed-bottom mx-5 mb-3'>
+      <button class='btn btn-primary mb-3' id='save-btn' type='button'>Save</button>
+      <div class="progress" style="height: 20px;">
+        <div class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id='progress-bar'>0</div>
+      </div>
+    </footer>
 
-    <table class='table table-hover'>
-        <thead>
-            <tr>
-                <th scope='col'>#</th>
-                <th scope='col'>Name</th>
-                <th scope='col'>Team</th>
-                <th scope='col'>Cost</th>
-                <th scope='col'>Select</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for driver in drivers %}
-                <tr>
-                    <th scope='row'>{{ driver.id }}</th>
-                    <td>{{ driver.name }}</td>
-                    <td>{{ driver.team.name }}</td>
-                    <td>{{ driver.cost }}</td>
-                    <td>
-                        <button type='button' class='btn btn-secondary' id='selected_{{ driver.id }}'>
-                            Select</button>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-
-{% endblock content %}
-
-{% block scripts %}
-    <sript src="{{ url_for('static', filename='scripts/edit_team') }}"></sript>
-{% endblock scripts %}
+    {% endblock content %}
