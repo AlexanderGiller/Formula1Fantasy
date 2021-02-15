@@ -21,6 +21,7 @@ def edit_team():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
 
+    # all drivers, ordered by cost descending
     drivers = Driver.query.order_by(Driver.cost.desc()).all()
 
     return render_template('team/edit_team.html', title='My Team', drivers=drivers)
@@ -36,7 +37,6 @@ def save_roster():
         current_roster = Roster(user_id=current_user)
 
     # print(drivers, file=sys.stderr)
-    temp_dict = {}
 
     for index, driver in enumerate(drivers):
         # temp_dict[f"driver_{index}"] = driver

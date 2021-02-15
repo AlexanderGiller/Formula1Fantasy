@@ -76,7 +76,6 @@ def account():
 
     elif request.method == 'GET':
         form.username.data = current_user.username
-        form.password.data = current_user.password
 
     image_file = url_for(
         'static', filename=f"profile_pics/{current_user.image_file}")
@@ -85,6 +84,9 @@ def account():
 
 
 def _save_picture(form_picture, old_pic):
+    """ Changes the name of the uploaded file to a random 8 character string
+        deletes the old picture if its not the default
+    """
     random_hex = secrets.token_hex(8)
     _, f_extension = os.path.splitext(form_picture.filename)
     picture_fn = random_hex + f_extension

@@ -16,6 +16,7 @@ def index():
 def bug_report():
     form = BugForm()
 
+    # ! discord hook url will need to be hidden in env variables
     if form.validate_on_submit():
         message = f"User '{current_user.username}' sent the following report:\nSubject: '{form.subject.data}'\n>>> {form.text.data}"
         requests.post(
