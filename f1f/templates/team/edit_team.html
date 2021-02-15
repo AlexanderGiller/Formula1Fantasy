@@ -6,32 +6,33 @@
 
 {% block content %}
 
-    <h1 class='display-1'>Edit Team</h1>
+  <div id='msg' ></div>
 
+  <h1 class='display-1'>Edit Team</h1>
+  
+  <div class="row row-cols-1 row-cols-md-3 g-4 mb-5 pb-5">
+    {% for driver  in drivers %}
     
-    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5 pb-5">
-      {% for driver  in drivers %}
-      
       <div class="col">
-        <div class="card h-100 " id='driver_{{ driver.id }}'>
+        <div class="card h-100 " id='{{ driver.id }}'>
           <img src="{{ url_for('static', filename='images/drivers/placeholder.jpg') }}" class="card-img-top" alt="Driver Picture">
           <div class="card-body">
             <h5 class="card-title">#{{ driver.id }}  {{ driver.name }}</h5>
             <p class="card-text">{{ driver.first_name }} {{ driver.name }}</p>
-            <p class="card-text">Driving for {{ driver.team.name_short }}</p>
-            <p class="card-text price">{{ driver.cost }}</p>
+            <p class="card-text">{{ driver.team.name_short }}</p>
+            <p class="card-text price fw-bolder">{{ driver.cost }}</p>
           </div>
         </div>
       </div>
-      
-      {% endfor %}
-    </div>
     
-    <footer class='fixed-bottom mx-5 mb-3'>
-      <button class='btn btn-primary mb-3' id='save-btn' type='button'>Save</button>
-      <div class="progress" style="height: 20px;">
-        <div class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id='progress-bar'>0</div>
-      </div>
-    </footer>
+    {% endfor %}
+  </div>
+  
+  <footer class='fixed-bottom mx-5 mb-3'>
+    <button class='btn btn-primary mb-3' id='save-btn' type='button'>Save</button>
+    <div class="progress" style="height: 20px;">
+      <div class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id='progress-bar'>0</div>
+    </div>
+  </footer>
 
-    {% endblock content %}
+{% endblock content %}

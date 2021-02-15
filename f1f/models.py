@@ -52,11 +52,11 @@ class Roster(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    driver_one = db.Column(db.Integer, db.ForeignKey('driver.id'))
-    driver_two = db.Column(db.Integer, db.ForeignKey('driver.id'))
-    driver_three = db.Column(db.Integer, db.ForeignKey('driver.id'))
-    driver_four = db.Column(db.Integer, db.ForeignKey('driver.id'))
-    driver_five = db.Column(db.Integer, db.ForeignKey('driver.id'))
+    driver_0 = db.Column(db.Integer, db.ForeignKey('driver.id'))
+    driver_1 = db.Column(db.Integer, db.ForeignKey('driver.id'))
+    driver_2 = db.Column(db.Integer, db.ForeignKey('driver.id'))
+    driver_3= db.Column(db.Integer, db.ForeignKey('driver.id'))
+    driver_4 = db.Column(db.Integer, db.ForeignKey('driver.id'))
     selected_team = db.Column(db.Integer, db.ForeignKey('team.id'))
     cost = db.Column(db.Float)
 

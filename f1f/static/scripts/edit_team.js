@@ -25,8 +25,23 @@ $(document).ready(function(){
         $(this).toggleClass('bg-info');
     });
 
+    $("#save-btn").on("click", function(){
+        if (total_cost <= 100){
+            $.post("/save_roster", 
+                {
+                    'drivers': JSON.stringify(Array.from(selected_drivers)),
+                    'roster' : 1
+                }, 
+                function(_, status){
+                    if (status === "success"){
+                        $('#msg').html('<span style="color: green;">Saved sucessfully.</span>');
+                    }
+                });
+        }
+    });
+
+    //update the total cost bar
     function calculateCost (change) {
-        
         total_cost = +((total_cost + parseFloat(change)).toFixed(1));
 
         $("#progress-bar").attr("aria-valuenow", Math.round(total_cost));

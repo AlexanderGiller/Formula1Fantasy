@@ -1,7 +1,9 @@
-from flask import render_template, redirect, url_for
+import sys
+import json
+from flask import render_template, redirect, url_for, request, jsonify
 from flask_login import current_user
-from f1f import app
-from f1f.models import Driver
+from f1f import app, db
+from f1f.models import Driver, Roster
 
 
 @app.route('/dashboard')
@@ -22,3 +24,25 @@ def edit_team():
     drivers = Driver.query.order_by(Driver.cost.desc()).all()
 
     return render_template('team/edit_team.html', title='My Team', drivers=drivers)
+
+
+@app.route('/save_roster', methods=['POST'])
+def save_roster():
+    drivers = json.loads(request.form['drivers'])
+    roster = json.loads(request.form['roster'])
+
+    current_roster = Roster.query.filter(Roster.user_id == current_user.id, Roster.id == roster).first()
+    if current_roster is None:
+        current_roster = Roster(user_id=current_user)
+
+    # print(drivers, file=sys.stderr)
+    temp_dict = {}
+
+    for index, driver in enumerate(drivers):
+        # temp_dict[f"driver_{index}"] = driver
+        exec(f"current_roster.driver_{index} = {driver}")
+
+    db.session.commit()
+
+
+    return jsonify(success=True)
