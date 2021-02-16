@@ -8,19 +8,47 @@
 
   <div id='msg' ></div>
 
-  <h1 class='display-1'>Edit Team</h1>
+  <select name='Race'>
+    {% for roster in rosters %}
+      <option value="{{ roster.id }}">{{ roster.race.country }}</option>
+    {% endfor %}
+  </select>
+
   
-  <div class="row row-cols-1 row-cols-md-3 g-4 mb-5 pb-5">
+  <button class="btn btn-primary" id="btn-drivers">Drivers</button>
+  <button class="btn btn-secondary" id="btn-teams">Team</button>
+
+  <h1 class='display-1 edit_driver'>Choose Drivers</h1>  
+  <div class="row row-cols-1 row-cols-md-3 g-4 mb-5 pb-5 edit_driver">
     {% for driver  in drivers %}
     
       <div class="col">
-        <div class="card h-100 " id='{{ driver.id }}'>
+        <div class="card h-100 edit_driver" id='{{ driver.id }}'>
           <img src="{{ url_for('static', filename='images/drivers/placeholder.jpg') }}" class="card-img-top" alt="Driver Picture">
           <div class="card-body">
             <h5 class="card-title">#{{ driver.id }}  {{ driver.name }}</h5>
             <p class="card-text">{{ driver.first_name }} {{ driver.name }}</p>
             <p class="card-text">{{ driver.team.name_short }}</p>
             <p class="card-text price fw-bolder">{{ driver.cost }}</p>
+          </div>
+        </div>
+      </div>
+    
+    {% endfor %}
+  </div>
+
+  <h1 class='display-1 edit_team'>Choose Constructor</h1>
+  <div class="row row-cols-1 row-cols-md-3 g-4 mb-5 pb-5 edit_team">
+    {% for team in teams %}
+    
+      <div class="col">
+        <div class="card h-100 edit_team" id='{{ team.id }}'>
+          <img src="{{ url_for('static', filename='images/teams/placeholder.jpg') }}" class="card-img-top" alt="Team Picture">
+          <div class="card-body">
+            <h5 class="card-title">{{ team.name_short }}</h5>
+            <p class="card-text">{{ team.name }}</p>
+            <p class="card-text">{{ team.drivers[0].name }} - {{ team.drivers[1].name }}</p>
+            <p class="card-text price fw-bolder">{{ team.cost }}</p>
           </div>
         </div>
       </div>

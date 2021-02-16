@@ -73,8 +73,10 @@ class Roster(db.Model):
     race_id = db.Column(db.Integer, db.ForeignKey('race.id'))
     race = db.relationship('Race')
 
-
     locked = db.Column(db.Integer, default=0) # 1 or 0 for true or false respectively
+
+    def __repr__(self):
+        return f"Roster('{self.user_id.username}' Race: '{self.race.country}')"
 
 class Race(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -86,3 +88,6 @@ class Race(db.Model):
 
     qualifying_start = db.Column(db.String(30)) # iso datetime string
     race_start = db.Column(db.String(30))
+
+    def __repr__(self):
+        return f"Race('{self.country}' Status: '{self.status}')"

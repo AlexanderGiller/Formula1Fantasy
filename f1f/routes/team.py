@@ -1,8 +1,8 @@
 import json
-from flask import render_template, redirect, url_for, request, jsonify
+from flask import render_template, redirect, url_for, request, jsonify, abort
 from flask_login import current_user
 from f1f import app, db
-from f1f.models import Driver, Roster
+from f1f.models import Driver, Roster, Team
 
 
 @app.route('/dashboard')
@@ -22,26 +22,39 @@ def edit_team():
 
     # all drivers, ordered by cost descending
     drivers = Driver.query.order_by(Driver.cost.desc()).all()
+    teams = Team.query.order_by(Team.cost.desc()).all()
+    rosters = Roster.query.filter(current_user.id == Roster.user_id).order_by(Roster.id.desc()).all()
 
-    return render_template('team/edit_team.html', title='My Team', drivers=drivers)
+    return render_template('team/edit_team.html', title='My Team', drivers=drivers, teams=teams, rosters=rosters)
+
+
 
 
 @app.route('/save_roster', methods=['POST'])
 def save_roster():
     drivers = json.loads(request.form['drivers'])
+    team = json.loads(request.form['team'])
     roster = json.loads(request.form['roster'])
 
-    current_roster = Roster.query.filter(Roster.user_id == current_user.id, Roster.id == roster).first()
-    if current_roster is None:
-        current_roster = Roster(user_id=current_user)
+    roster = Roster.query.filter(Roster.user_id == current_user.id, Roster.id == roster).first()
+    if roster is None:
+        abort(400)
 
-    # print(drivers, file=sys.stderr)
+    _save_to_db(roster, drivers, team)
 
-    for index, driver in enumerate(drivers):
-        # temp_dict[f"driver_{index}"] = driver
-        exec(f"current_roster.driver_{index} = {driver}")
+    return jsonify(sucess=True)
+
+
+def _save_to_db(roster, drivers, team):
+    driver_list = drivers
+
+    while len(driver_list) < 5:
+        driver_list.append(None)
+
+    # ! not a clean solution with exec
+    for index, driver in enumerate(driver_list):
+        exec(f'roster.driver_{index}_id = {driver}')
+
+    roster.team_id = team
 
     db.session.commit()
-
-
-    return jsonify(success=True)
