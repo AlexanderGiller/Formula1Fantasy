@@ -17,6 +17,8 @@ class User(db.Model, UserMixin):
 
     budget = db.Column(db.Float)
 
+    points = db.Column(db.Integer)
+
     rosters = db.relationship('Roster', backref='user', lazy=True)
 
     def __repr__(self):
@@ -52,15 +54,25 @@ class Roster(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    driver_0 = db.Column(db.Integer, db.ForeignKey('driver.id'))
-    driver_1 = db.Column(db.Integer, db.ForeignKey('driver.id'))
-    driver_2 = db.Column(db.Integer, db.ForeignKey('driver.id'))
-    driver_3= db.Column(db.Integer, db.ForeignKey('driver.id'))
-    driver_4 = db.Column(db.Integer, db.ForeignKey('driver.id'))
-    selected_team = db.Column(db.Integer, db.ForeignKey('team.id'))
+    driver_0_id = db.Column(db.Integer, db.ForeignKey('driver.id'))
+    driver_1_id = db.Column(db.Integer, db.ForeignKey('driver.id'))
+    driver_2_id = db.Column(db.Integer, db.ForeignKey('driver.id'))
+    driver_3_id = db.Column(db.Integer, db.ForeignKey('driver.id'))
+    driver_4_id = db.Column(db.Integer, db.ForeignKey('driver.id'))
+    driver_0 = db.relationship('Driver', foreign_keys=driver_0_id)
+    driver_1 = db.relationship('Driver', foreign_keys=driver_1_id)
+    driver_2 = db.relationship('Driver', foreign_keys=driver_2_id)
+    driver_3 = db.relationship('Driver', foreign_keys=driver_3_id)
+    driver_4 = db.relationship('Driver', foreign_keys=driver_4_id)
+
+    team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
+    team = db.relationship('Team')
+
     cost = db.Column(db.Float)
 
-    race = db.Column(db.Integer, db.ForeignKey('race.id'))
+    race_id = db.Column(db.Integer, db.ForeignKey('race.id'))
+    race = db.relationship('Race')
+
 
     locked = db.Column(db.Integer, default=0) # 1 or 0 for true or false respectively
 

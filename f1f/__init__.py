@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 # ! later to be hidden in environment variable
 app.config['SECRET_KEY'] = b'\xef\xec=\x17\x10\xab|h\xadZ\xd1\t\xf8\x13\xec\xe5'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db' 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # removed warning of deprecation when starting
 
 db = SQLAlchemy(app)

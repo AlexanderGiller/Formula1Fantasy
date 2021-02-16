@@ -1,4 +1,3 @@
-import sys
 import json
 from flask import render_template, redirect, url_for, request, jsonify
 from flask_login import current_user
