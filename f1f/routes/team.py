@@ -11,7 +11,7 @@ def dashboard():
         return redirect(url_for('login'))
 
     image_file = url_for(
-        'static', filename=f"profile_pics/{current_user.image_file}")
+        'static', filename=f"images/profile_pics/{current_user.image_file}")
     return render_template('team/dashboard.html', title='Dashboard', image_file=image_file)
 
 
@@ -43,6 +43,28 @@ def save_roster():
     _save_to_db(roster, drivers, team)
 
     return jsonify(sucess=True)
+
+@app.route('/get_roster')
+def get_roster():
+    roster_id = request.args.get('roster_id')
+    if roster_id is None:
+        abort(400)
+
+    selected = {"drivers": [], "team": {"id": "", "cost": 0.0}}
+    roster = Roster.query.filter(Roster.user_id == current_user.id, Roster.id == roster_id).first()
+
+    if roster is None:
+        abort(400)
+
+    # ! not a clean solution with exec
+    for index in range(5):
+        exec(f'if roster.driver_{index} is not None: \
+            selected["drivers"].append({{"id": roster.driver_{index}.id, "cost": roster.driver_{index}.cost}})')
+
+    if roster.team is not None:
+        selected["team"] = {"id": roster.team.id, "cost": roster.team.cost}
+
+    return jsonify(selected)
 
 
 def _save_to_db(roster, drivers, team):

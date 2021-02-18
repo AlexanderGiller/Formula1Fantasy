@@ -78,7 +78,7 @@ def account():
         form.username.data = current_user.username
 
     image_file = url_for(
-        'static', filename=f"profile_pics/{current_user.image_file}")
+        'static', filename=f"images/profile_pics/{current_user.image_file}")
 
     return render_template('account/account.html', title='Account', image_file=image_file, form=form)
 
@@ -91,7 +91,7 @@ def _save_picture(form_picture, old_pic):
     _, f_extension = os.path.splitext(form_picture.filename)
     picture_fn = random_hex + f_extension
     picture_path = os.path.join(
-        app.root_path, 'static/profile_pics', picture_fn)
+        app.root_path, 'static/images/profile_pics', picture_fn)
 
     form_picture.save(picture_path)
     # output_size = (250, 250)
@@ -100,7 +100,7 @@ def _save_picture(form_picture, old_pic):
     # i.save(picture_path)
     # ? if the file is downsized, gifs are lost to a single frame
 
-    old_pic_path = os.path.join(app.root_path, 'static/profile_pics', old_pic)
+    old_pic_path = os.path.join(app.root_path, 'static/images/profile_pics', old_pic)
     if os.path.exists(old_pic_path) and old_pic != 'default.jpg':
         os.remove(old_pic_path)
 

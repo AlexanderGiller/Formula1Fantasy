@@ -1,14 +1,23 @@
 // when the document has fully loaded: 
 const selected_units = {drivers: [], team: {id: "", cost: 0.0}};
 var roster_id = "";
+var is_locked = null;
 var total_cost = 0.0;
 const max_cost = 100;
 
 $(document).ready(function(){
     
-    roster_id = $("#roster_selector").val();
-    
+    update_roster_status();
+    update_roster_selection();
+
     $(".edit_team").hide();
+
+
+    // when a new roster is selected
+    $("#roster_selector").change(function() { 
+        update_roster_status(); 
+        update_roster_selection();
+    });
     
     //when the driver button is clicked
     $("#btn-drivers").on("click", function(){
@@ -28,6 +37,9 @@ $(document).ready(function(){
 
     // when a card is clicked
     $(".card").on("click", function(){
+        if (is_locked)
+            return;
+
         const is_driver = $(this).hasClass('edit_driver');
         const this_id = $(this).attr('id').split('_')[1];
         const this_cost = $(this).find('.price').text();
@@ -45,7 +57,7 @@ $(document).ready(function(){
         if (is_driver && selected_units.drivers.length >= 5 && is_new)
             return;
             
-        // update units dict and total cost
+        // update units dict and visual
         if (is_driver){
             filterArray(selected_units.drivers, {id: this_id, cost: this_cost}, "id")
         }
@@ -53,23 +65,27 @@ $(document).ready(function(){
             selected_units.team = {id: "", cost: 0.0}
         } else {
             if (selected_units.team.id !== ""){
-                $(`#team_${selected_units.team.id}`).toggleClass('bg-info').find('.checkmark-img').toggle();
-                $(`#team_${selected_units.team.id}`).find('.img-thumbnail').toggleClass('img-darken');
+                change_card_visual(`#team_${selected_units.team.id}`, "toggle");
             }
             selected_units.team = {id: this_id, cost: this_cost}
         }
         
         console.log(selected_units);
 
-        calculateCost();
+        updateCostBar();
 
         // toggle css class to visually represent
-        $(this).toggleClass('bg-info');
-        $(this).find('.checkmark-img').toggle();
-        $(this).find('.img-thumbnail').toggleClass('img-darken');
+        change_card_visual(this, "toggle");
+
     });
     // Save the selections
     $("#save-btn").on("click", function(){
+        if (is_locked){
+            $("#msg_error").text("This race has already concluded.");                        
+            $("#msg_error").show(200).delay(5000).fadeOut();
+            return;
+        }
+
         let driver_ids = selected_units.drivers.map(function(e) {
             return e.id;
         });
@@ -86,29 +102,30 @@ $(document).ready(function(){
                     if (status === "success"){
                         $("#msg_success").show(200).delay(5000).fadeOut();
                     } else {
+                        $("#msg_error").text("Grosjean probably crashed into our servers again...");                        
                         $("#msg_error").show(200).delay(5000).fadeOut();                        
                     }
                 });
+        } else {
+            $("#msg_error").text("The cost is too damn high!");                        
+            $("#msg_error").show(200).delay(5000).fadeOut();     
         }
     });
     $("#clear-btn").on("click", function(){
-        for (driver of selected_units.drivers) {
-            $(`#driver_${driver.id}`).toggleClass('bg-info').find('.checkmark-img').toggle();
-            $(`#driver_${driver.id}`).find('.img-thumbnail').toggleClass('img-darken');
-        }
+        if (is_locked)
+            return;
 
-        $(`#team_${selected_units.team.id}`).toggleClass('bg-info').find('.checkmark-img').toggle();
-        $(`#team_${selected_units.team.id}`).find('.img-thumbnail').toggleClass('img-darken');
+        change_card_visual(".card", "remove");
 
         selected_units.drivers = [];
         selected_units.team = {id: "", cost: 0.0};
-        calculateCost();
+        updateCostBar();
     });
     
 });
 
 //update the total cost bar
-function calculateCost () {
+function updateCostBar () {
     total_cost = 0.0;
 
     for (driver of selected_units.drivers){
@@ -125,6 +142,47 @@ function calculateCost () {
     } else {
         $("#progress-bar").removeClass("bg-danger");
         $("#save-btn").addClass("btn-primary").removeClass("btn-danger");
+    }
+}
+
+function update_roster_status () {
+    roster_id = $("#roster_selector").val();
+    is_locked = $("#roster_selector").find(":selected").hasClass("locked_1");
+    $("#locked-text").text(is_locked ? "Locked" : "Unlocked");
+}
+
+function update_roster_selection () {
+    $.get(`/get_roster?roster_id=${roster_id}`, function(data, status) {
+        if(status !== "success") {
+            $("#msg_error").text("Grosjean probably crashed into our servers again...");                        
+            $("#msg_error").show(200).delay(5000).fadeOut();
+            return;
+        }
+        selected_units.drivers = data.drivers;
+        selected_units.team = data.team;
+
+        change_card_visual(".card", "remove");
+
+
+        for (driver of selected_units.drivers) {
+            change_card_visual(`#driver_${driver.id}`, "select");
+        }
+        change_card_visual(`#team_${selected_units.team.id}`, "select");
+
+        updateCostBar();
+    });
+}
+
+function change_card_visual (selector, op) {
+    if (op === "select") {
+        $(selector).addClass('bg-info').find('.checkmark-img').show();
+        $(selector).find('.img-thumbnail').removeClass('img-darken');
+    } else if (op === "remove") {
+        $(selector).removeClass('bg-info').find('.checkmark-img').hide();
+        $(selector).find('.img-thumbnail').addClass('img-darken');
+    } else if (op === "toggle") {
+        $(selector).toggleClass('bg-info').find('.checkmark-img').toggle();
+        $(selector).find('.img-thumbnail').toggleClass('img-darken');
     }
 }
 

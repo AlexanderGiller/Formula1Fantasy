@@ -2,7 +2,6 @@
 .vscode
 *.db
 
-profile_pics/
 f1f/static/images/*/*.*
 
 
