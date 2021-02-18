@@ -47,7 +47,7 @@ $(document).ready(function(){
 
         // check if the clicked card is already selected
         for (let i = 0; i < selected_units.drivers.length; i++){
-            if (selected_units.drivers[i].id === this_id) {
+            if (Number(selected_units.drivers[i].id) === Number(this_id)) {
                 is_new = false; 
                 break;
             }
@@ -59,9 +59,9 @@ $(document).ready(function(){
             
         // update units dict and visual
         if (is_driver){
-            filterArray(selected_units.drivers, {id: this_id, cost: this_cost}, "id")
+            filterArray(selected_units.drivers, {id: Number(this_id), cost: parseFloat(this_cost)}, "id")
         }
-        else if (selected_units.team.id === this_id) {
+        else if (Number(selected_units.team.id) === Number(this_id)) {
             selected_units.team = {id: "", cost: 0.0}
         } else {
             if (selected_units.team.id !== ""){
